@@ -4,13 +4,13 @@ Class that will poll and control all mcp button inputs.
 
 from DAH import MCP23S17
 
-class mcpButton(object):
+class mcpButtons(object):
 	
 	def __init__(self, mcpChip, mcpAddress):
 		#===============================================================
 		# Constructor that defines genrral button parameters
 		
-		self.mcp= MCP12S17(chip= mcpChip, address= mcpAddress)
+		self.mcp= MCP23S17(chip= mcpChip, address= mcpAddress)
 		self.mcpButtonNumber= 11
 		
 	def mcpButtonsPressedIndex(self):
@@ -31,7 +31,7 @@ class mcpButton(object):
 		self.mcpListStates= [int(x) for x in str(self.mcpBinaryState)]
 		self.mcpListStates= self.mcpListStates[::-1]
 		
-	def mcpPollButtonPoly(self):
+	def mcpPollButton(self):
 		#===============================================================
 		# Poll all mcp buttons and return binary string representing all
 		# button states. If length binary is < number of buttons, fill
@@ -44,19 +44,19 @@ class mcpButton(object):
 		#===============================================================
 		# Return indexes of all mcp buttons being pressed simultaneously
 		
-		self.mcpButtonsPressedPoly()
+		self.mcpPollButton()
 		self.mcpConvertBinaryToList()
 		self.mcpButtonsPressedIndex()
 		
 		return self.index
 		
-	def mcpButtonPressedSingle(self):
+	def mcpButtonsPressedSingle(self):
 		#===============================================================
 		# Return index of a single mcp buttons being pressed. If no buttons
 		# are being pressed or registered button press is not within range, 
 		# return index of first button.
 		
-		self.mcpButtonsPressedPoly()
+		self.mcpPollButton()
 		self.mcpConvertBinaryToList()
 		self.mcpButtonsPressedIndex()
 		
