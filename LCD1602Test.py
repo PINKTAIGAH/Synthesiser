@@ -1,5 +1,5 @@
 """
-Script to test the functionality of the lcd class
+Script to test the functionality of the LCD1602 class
 """
 from LCD1602 import LCD1602
 from time import sleep
