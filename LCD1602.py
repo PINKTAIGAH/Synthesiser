@@ -6,7 +6,7 @@ import board
 import digitalio
 import adafruit_character_lcd.character_lcd as characterlcd
 
-class lcd(object):
+class LCD1602(object):
 	def __init__(self):
 		#===============================================================
 		# Constructor that defines lcd parameters and GPIO pin connections
