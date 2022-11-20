@@ -33,7 +33,7 @@ class pcfButtons(object):
 		# Return increase index if desired button is pressed. ie: bool is true
 		
 		if buttonState== True:
-			i++1
+			i+=1
 		return i
 		
 	def checkIndexOverflow(self, i, buttonList):
@@ -42,7 +42,7 @@ class pcfButtons(object):
 		# Set index to zero if true
 		
 		if i==len(buttonList):
-            i=0
+			i=0
 		return i 
 		
 	def waveformButtonState(self):
@@ -50,8 +50,8 @@ class pcfButtons(object):
 		# Return current button index for waveform button
 		
 		buttonState= self.checkButtonState(self.waveformButton)
-		self.increaseIndex(buttonState, self.waveformIndex)
-		self.checkIndexOverflow(self.waveformIndex, self.waveformList)
+		self.waveformIndex= self.increaseIndex(buttonState, self.waveformIndex)
+		self.waveformIndex= self.checkIndexOverflow(self.waveformIndex, self.waveformList)
 		
 		return self.waveformIndex
 		
@@ -60,8 +60,8 @@ class pcfButtons(object):
 		# Return current button index for octave button
 		
 		buttonState= self.checkButtonState(self.octaveButton)
-		self.increaseIndex(buttonState, self.octaveIndex)
-		self.checkIndexOverflow(self.octaveIndex, self.octaveList)
+		self.octaveIndex= self.increaseIndex(buttonState, self.octaveIndex)
+		self.octaveIndex= self.checkIndexOverflow(self.octaveIndex, self.octaveList)
 		
 		return self.octaveIndex
 		
