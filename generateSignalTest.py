@@ -8,7 +8,7 @@ import time
 
 def main():
 	# Initiate class
-	generate= generateSignal()
+	generate= generateSignal(2, 44100)
 	
 	# Generate buffer and compute how long it takes
 	t_i= time.time()

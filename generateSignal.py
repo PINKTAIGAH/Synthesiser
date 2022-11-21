@@ -10,12 +10,12 @@ import scipy.signal as signal
 
 class generateSignal(object):
 	
-	def __init__(self):
+	def __init__(self, channelSize, outputRate):
 		#===============================================================
 		# Constructor what will define general relevant parameters for wave generation
 		
-		self.channelSize= 2
-		self.outputRate= 44100
+		self.channelSize= channelSize
+		self.outputRate= outputRate
 		self.maxAmplitude= np.iinfo(np.int16).max
 		self.attackDecayLengh= 5000
 		
