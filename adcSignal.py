@@ -9,7 +9,7 @@ class adcSignal(object):
 		# Constructor that will ddefine general parametes of the adcSignal
 		# class
 		
-		self.adc= MCP2308(chip= chip)
+		self.adc= MCP3208(chip= chip)
 		self.channelSize= 3
 		self.maxPitch= 2000
 		self.maxLenght= 5
@@ -23,7 +23,6 @@ class adcSignal(object):
 		# Channel 2 => lenght
 		
 		self.adcReadingRaw= [self.adc.analogReadFloat(channel= i) for i in range(self.channelSize)]
-		self.adcReadingRaw= round(i, 3) for i in range(self.channelSize)
 	
 	def convertRawToData(self):
 		#===============================================================
@@ -31,8 +30,9 @@ class adcSignal(object):
 		
 		self.adcReading= self.adcReadingRaw
 		
-		self.adcReading[0]= int(adc_reading[0]*self.maxPitch)
-		self.adcReading[2]= adc_reading[2]*self.maxLenght
+		self.adcReading[0]= int(self.adcReadingRaw[0]*self.maxPitch)
+		self.adcReading[1]= round(self.adcReadingRaw[1], 2)
+		self.adcReading[2]= round(self.adcReading[2]*self.maxLenght, 2)
 		
 	def adcPoll(self):
 		#===============================================================
@@ -41,7 +41,7 @@ class adcSignal(object):
 		self.adcPollRaw()
 		self.convertRawToData()
 		
-		return self.adcReading*
+		return self.adcReading
 		
 
 		
