@@ -7,6 +7,7 @@ symetrical ASD envelope for the generated waveform.
 import numpy as np
 import time
 import scipy.signal as signal
+import matplotlib.pyplot as plt
 
 class generateSignal(object):
 	
@@ -148,5 +149,5 @@ class generateSignal(object):
 			# Throw error if input waveform if not recognised by class
 			raise Exception(f'Waveform type not recognised \nTry: \'sine\',' + \
 						f'\'square\', \'triangle\', \'sawtooth\' or \'noise\'')
-		
+
 		return outputBuffer

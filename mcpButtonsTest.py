@@ -10,7 +10,7 @@ def main_poly():
 	
 	while True:
 		mcp= mcpButtons(0, 0x20)
-		print(mcp.mcpButtonsPressedPoly())
+		print(mcp.buttonsPressedPoly())
 		sleep(0.2)
 		
 def main_single():
@@ -19,8 +19,8 @@ def main_single():
 	
 	while True:
 		mcp= mcpButtons(0, 0x20)
-		print(mcp.mcpButtonsPressedSingle())
+		print(mcp.buttonsPressedSingle())
 		sleep(0.2)
 		
 if __name__== '__main__':
-	main_single()
+	main_poly()

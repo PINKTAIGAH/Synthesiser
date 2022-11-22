@@ -16,6 +16,8 @@ class synthesiser(object):
 		#===============================================================
 		# Constructor that will define general parameters for synthesiser
 		
+		self.volume=0.5
+		self.length= 0.3
 		self.adcChip= 1
 		self.mcpChip= 0
 		self.pcfAddress= 0x38
@@ -23,31 +25,71 @@ class synthesiser(object):
 		self.bitSize= 16
 		self.channelSize= 2
 		self.outputRate= 44100
+		self.octaveIndex= 0
+		self.waveformIndex= 0
 		self.octaves= (0,1,2,3,4,5,6,7,8)
 		self.waveforms= ('sine', 'square', 'triangle', 'sawtooth', 'noise')
 		self.frequencies=  np.loadtxt(f'frequencies.txt', delimiter= ',',\
 							comments= '#')
 		
 		# Initialize pygame mixer module
-		pygame.mixer.init(frequency= OUTPUT_RATE, channels= self.channelSize, size= -self.bitSize)
+		pygame.mixer.init(frequency= self.outputRate, channels= self.channelSize, size= -self.bitSize)
 		
 		# Initialize all classes for circuit I/O
-		adc= adcSignal(self.adcChip)
-		pcf= pcfButtons(self.pcfAddress)
-		mcp= mcpButtons(self.mcpChip, self.mcpAddress)
-		lcd= LCD1602()
+		self.waveGenerator= generateSignal(self.channelSize, self.outputRate)
+		self.adc= adcSignal(self.adcChip)
+		self.pcf= pcfButtons(self.pcfAddress)
+		self.mcp= mcpButtons(self.mcpChip, self.mcpAddress)
+		self.lcd= LCD1602()
 		
 	def convertBufferToSound(self):
 		#===============================================================
 		# Convert and return a buffer object into a pygame sound object
 		
-		self.note= pygame.mixer.Sound(buffer= self.buffer) 
+		self.soundArray= [pygame.mixer.Sound(buffer=self.bufferArray[i]) for i in range(len(self.bufferArray))]
 	
-	def createNoteArray(self):
+	def createBufferArray(self):
 		#===============================================================
-		# Convert an array of sound objects dictaded by button presses
+		# Create an array of buffer objects for all notes to be played
 		
-		 
+		self.bufferArray= [self.waveGenerator.createBuffer(self.frequencies[self.octaveIndex][i],\
+				self.volume,self.length, self.waveforms[self.waveformIndex]) \
+				for i in self.keysPressed]
+	
+	def createSoundArray(self):
+		#===============================================================
+		# Create an array of sound objects for all notes to be played
 		
- 
-		 
+		self.createBufferArray()
+		self.convertBufferToSound()
+		
+	def playSoundArray(self):
+		#===============================================================
+		# Play on system all sound objects in array
+		
+		for i, individualSound in enumerate (self.soundArray):
+			individualSound.play()
+
+	def lcdPrintPiano(self):
+		#===============================================================
+		# Print current state of synthesiser to lcd screen for 'Piano mode'
+		
+		line1= f'Wave : {self.waveforms[self.waveformIndex]}     '
+		line2= f'\nOctave: {self.octaveIndex}'
+		self.lcd.write(line1, line2)
+	
+	def runPiano(self):
+		#===============================================================
+		# Main loop that will run the synthesyser
+		running=True
+		while running:
+			self.keysPressed= self.mcp.buttonsPressedPoly()
+			self.createSoundArray()
+			self.playSoundArray()
+			self.waveformIndex= self.pcf.waveformButtonState()
+			self.octaveIndex= self.pcf.octaveButtonState()
+			self.lcdPrintPiano()
+			sleep(self.length)
+			
+		
+		

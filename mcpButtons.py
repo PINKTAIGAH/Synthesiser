@@ -40,7 +40,7 @@ class mcpButtons(object):
 		self.mcpBinaryState= bin(self.mcp.portRead())[2:].zfill(self.mcpButtonNumber)
 		
 		
-	def mcpButtonsPressedPoly(self):
+	def buttonsPressedPoly(self):
 		#===============================================================
 		# Return indexes of all mcp buttons being pressed simultaneously
 		
@@ -50,7 +50,7 @@ class mcpButtons(object):
 		
 		return self.index
 		
-	def mcpButtonsPressedSingle(self):
+	def buttonsPressedSingle(self):
 		#===============================================================
 		# Return index of a single mcp buttons being pressed. If no buttons
 		# are being pressed or registered button press is not within range, 
