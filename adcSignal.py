@@ -10,7 +10,7 @@ class adcSignal(object):
 		# class
 		
 		self.adc= MCP3208(chip= chip)
-		self.channelSize= 3
+		self.adcChannelSize= 3
 		self.maxPitch= 2000
 		self.maxLenght= 1
 		
@@ -22,7 +22,7 @@ class adcSignal(object):
 		# Channel 1 => volume
 		# Channel 2 => lenght
 		
-		self.adcReadingRaw= [self.adc.analogReadFloat(channel= i) for i in range(self.channelSize)]
+		self.adcReadingRaw= [self.adc.analogReadFloat(channel= i) for i in range(self.adcChannelSize)]
 	
 	def convertRawToData(self):
 		#===============================================================

@@ -12,7 +12,7 @@ def main():
 	
 	# Generate buffer and compute how long it takes
 	t_i= time.time()
-	sine_buffer= generate.createBuffer(20, 0.5, 1, f'sine')
+	sine_buffer= generate.createBuffer(200, 0.5, 1, f'sine')
 	t_f= time.time()
 	print(t_f-t_i)
 	
