@@ -28,6 +28,8 @@ class synthesiser(object):
 		self.octaveIndex= 0
 		self.waveformIndex= 0
 		self.octaves= (0,1,2,3,4,5,6,7,8)
+		self.keysAmount= 11
+		self.keyParameters= [None for i in range(self.keysAmount)]
 		self.waveforms= ('sine', 'square', 'triangle', 'sawtooth', 'noise')
 		self.frequencies=  np.loadtxt(f'frequencies.txt', delimiter= ',',\
 							comments= '#')
@@ -70,6 +72,14 @@ class synthesiser(object):
 		for i, individualSound in enumerate (self.soundArray):
 			individualSound.play()
 
+	def writeCuntomMessage(self):
+		#===============================================================
+		# Create strings that will be output to lcd screen during mode 
+		# change loop
+		
+		self.line1= f'{self.adcParameters[0]} Hz, {self.adcParameters[2]} s      '
+		self.line2= f'{self.adcParameters[1]}, {self.waveforms[self.waveformIndex]}    '
+	
 	def lcdPrintPiano(self):
 		#===============================================================
 		# Print current state of synthesiser to lcd screen for 'Piano mode'
@@ -78,9 +88,31 @@ class synthesiser(object):
 		line2= f'\nOctave: {self.octaveIndex}'
 		self.lcd.write(line1, line2)
 	
+	def modeChangeLoop(self):
+		#===============================================================
+		# Loop that will find and find and return specified parameters from circuit
+		
+		sleep(1)
+		running= True
+		self.waveformIndex= 0
+		while running:
+			self.adcParameters= self.adc.adcPoll()
+			self.waveformIndex= self.pcf.waveformButtonState()
+			self.selectedKeyIndex= self.mcp.buttonsPressedSingle()
+			self.writeCuntomMessage()
+			self.lcd.write(self.line1, self.line2)
+			print(f'Selected button: {self.selectedKeyIndex}')
+			
+			click= self.pcf.modeChangeButtonState()
+			if click== True:
+				self.keyParameters[self.selectedKeyIndex]= (self.waveformIndex, *self.adcParameters)
+				self.lcd.clear()
+				break
+			sleep(0.3)
+				
 	def runPiano(self):
 		#===============================================================
-		# Main loop that will run the synthesyser
+		# Main loop that will run the synthesiser in piano mode
 		running=True
 		while running:
 			self.keysPressed= self.mcp.buttonsPressedPoly()
@@ -91,5 +123,19 @@ class synthesiser(object):
 			self.lcdPrintPiano()
 			sleep(self.length)
 			
+	def runCustom(self):
+		#===============================================================
+		# Main loop that will run synthesiser in custumisable mode
 		
+		running= True
+		while running:
+			# Click variable defines if mode change button has been pressed
+			# in this loop
+			
+			click= self.pcf.modeChangeButtonState()
+			if click== True:
+				self.modeChangeLoop()				
+			print(self.keyParameters)
+			click= False
+			sleep(0.5)
 		
