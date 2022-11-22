@@ -29,7 +29,7 @@ class synthesiser(object):
 		self.waveformIndex= 0
 		self.octaves= (0,1,2,3,4,5,6,7,8)
 		self.keysAmount= 11
-		self.keyParameters= [None for i in range(self.keysAmount)]
+		self.keyParameters= [(0,1,1,1) for i in range(self.keysAmount)]
 		self.waveforms= ('sine', 'square', 'triangle', 'sawtooth', 'noise')
 		self.frequencies=  np.loadtxt(f'frequencies.txt', delimiter= ',',\
 							comments= '#')
@@ -44,26 +44,26 @@ class synthesiser(object):
 		self.mcp= mcpButtons(self.mcpChip, self.mcpAddress)
 		self.lcd= LCD1602()
 		
-	def convertBufferToSound(self):
+	def convertBufferToSoundPiano(self):
 		#===============================================================
 		# Convert and return a buffer object into a pygame sound object
 		
-		self.soundArray= [pygame.mixer.Sound(buffer=self.bufferArray[i]) for i in range(len(self.bufferArray))]
+		self.soundArray= [pygame.mixer.Sound(buffer=self.bufferArrayPiano[i]) for i in range(len(self.bufferArrayPiano))]
 	
-	def createBufferArray(self):
+	def createBufferArrayPiano(self):
 		#===============================================================
 		# Create an array of buffer objects for all notes to be played
 		
-		self.bufferArray= [self.waveGenerator.createBuffer(self.frequencies[self.octaveIndex][i],\
+		self.bufferArrayPiano= [self.waveGenerator.createBuffer(self.frequencies[self.octaveIndex][i],\
 				self.volume,self.length, self.waveforms[self.waveformIndex]) \
 				for i in self.keysPressed]
 	
-	def createSoundArray(self):
+	def createSoundArrayPiano(self):
 		#===============================================================
 		# Create an array of sound objects for all notes to be played
 		
-		self.createBufferArray()
-		self.convertBufferToSound()
+		self.createBufferArrayPiano()
+		self.convertBufferToSoundPiano()
 		
 	def playSoundArray(self):
 		#===============================================================
@@ -72,7 +72,7 @@ class synthesiser(object):
 		for i, individualSound in enumerate (self.soundArray):
 			individualSound.play()
 
-	def writeCuntomMessage(self):
+	def writeCustomMessage(self):
 		#===============================================================
 		# Create strings that will be output to lcd screen during mode 
 		# change loop
@@ -88,6 +88,36 @@ class synthesiser(object):
 		line2= f'\nOctave: {self.octaveIndex}'
 		self.lcd.write(line1, line2)
 	
+	def findActiveKeys(self):
+		#===============================================================
+		# Reduce keyParameters down only keys with acxtiver bindings and 
+		# find indexes of keys with active bindings
+		
+		self.keyParameters= np.array(self.KeyParameters)
+		self.activeKeyIndexes= np.where(self.KeyParameters != None)
+		self.activeKeys= self.keyParameters[self.activeKeyIndexes]
+		
+	def convertBufferToSoundCustom(self):
+		#===============================================================
+		# Convert and return a buffer object into a pygame sound object
+		
+		self.soundArray= [pygame.mixer.Sound(buffer=self.bufferArrayCustom[i]) for i in range(len(self.bufferArrayCustom))]
+	
+	def createBufferArrayCustom(self):
+		#===============================================================
+		# Create an array of buffer objects for all notes to be played
+		
+		self.bufferArrayCustom= [self.waveGenerator.createBuffer(self.keyParameters[i][1],\
+				self.keyParameters[i][2], self.keyParameters[i][3],\
+				self.waveforms[self.keyParameters[i][0]]) for i in self.keysPressed]
+
+	def createSoundArrayCustom(self):
+		#===============================================================
+		# Create an array of sound objects for all notes to be played
+		
+		self.createBufferArrayCustom()
+		self.convertBufferToSoundCustom()
+	
 	def modeChangeLoop(self):
 		#===============================================================
 		# Loop that will find and find and return specified parameters from circuit
@@ -99,7 +129,7 @@ class synthesiser(object):
 			self.adcParameters= self.adc.adcPoll()
 			self.waveformIndex= self.pcf.waveformButtonState()
 			self.selectedKeyIndex= self.mcp.buttonsPressedSingle()
-			self.writeCuntomMessage()
+			self.writeCustomMessage()
 			self.lcd.write(self.line1, self.line2)
 			print(f'Selected button: {self.selectedKeyIndex}')
 			
@@ -116,7 +146,7 @@ class synthesiser(object):
 		running=True
 		while running:
 			self.keysPressed= self.mcp.buttonsPressedPoly()
-			self.createSoundArray()
+			self.createSoundArrayPiano()
 			self.playSoundArray()
 			self.waveformIndex= self.pcf.waveformButtonState()
 			self.octaveIndex= self.pcf.octaveButtonState()
@@ -135,7 +165,11 @@ class synthesiser(object):
 			click= self.pcf.modeChangeButtonState()
 			if click== True:
 				self.modeChangeLoop()				
-			print(self.keyParameters)
+			
+			self.keysPressed= self.mcp.buttonsPressedPoly()
+			self.createSoundArrayCustom()
+			self.playSoundArray()
+			sleep(0.5)
 			click= False
 			sleep(0.5)
 		

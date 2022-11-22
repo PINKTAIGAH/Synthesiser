@@ -12,7 +12,7 @@ class adcSignal(object):
 		self.adc= MCP3208(chip= chip)
 		self.channelSize= 3
 		self.maxPitch= 2000
-		self.maxLenght= 5
+		self.maxLenght= 1
 		
 	def adcPollRaw(self):
 		#===============================================================
