@@ -95,7 +95,6 @@ class synthesiser(object):
 		# Play on system all sound objects in array
 		
 		for i, individualSound in enumerate (self.soundArray):
-			print(individualSound)
 			individualSound.play()
 
 	def writeCustomMessage(self):
