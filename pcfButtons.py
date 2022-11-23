@@ -11,7 +11,6 @@ class pcfButtons(object):
 		
 		self.pcf= PCF8574(address= pcfAddress)
 		self.waveformList= [f'sine', f'square', f'sawtooth', f'triangle', f'noise']
-		self.octaveList= [0,1,2,3,4,5,6,7,8]
 		self.waveformButton=0
 		self.octaveButton= 1
 		self.modeChangeButton= 1
@@ -55,13 +54,13 @@ class pcfButtons(object):
 		
 		return self.waveformIndex
 		
-	def octaveButtonState(self):
+	def octaveButtonState(self, octaveList):
 		#===============================================================
 		# Return current button index for octave button
 		
 		buttonState= self.checkButtonState(self.octaveButton)
 		self.octaveIndex= self.increaseIndex(buttonState, self.octaveIndex)
-		self.octaveIndex= self.checkIndexOverflow(self.octaveIndex, self.octaveList)
+		self.octaveIndex= self.checkIndexOverflow(self.octaveIndex, octaveList)
 		
 		return self.octaveIndex
 		
