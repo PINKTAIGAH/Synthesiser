@@ -35,7 +35,6 @@ class synthesiser(object):
 							comments= '#')
 		self.sampleFrequencies= np.loadtxt(f'sampleNotes.txt', delimiter= ',',\
 							dtype= 'str')
-		
 		# Initialize pygame mixer module
 		pygame.mixer.init(frequency= self.outputRate, channels= self.channelSize, size= -self.bitSize)
 		
@@ -51,8 +50,8 @@ class synthesiser(object):
 		# Convert strings in elemets of samplefrequencies to edirectories 
 		# for location of corresponding .wav file
 		
-		prefix= np.full_like(self.sampleFrequencies, 'pianoSamples/')
-		suffix= np.full_like(self.sampleFrequencies, '.wav')
+		prefix= np.full(self.sampleFrequencies.shape, 'pianoSamples/')
+		suffix= np.full(self.sampleFrequencies.shape, '.wav')
 		self.sampleFrequencies= np.char.add(prefix, self.sampleFrequencies)
 		self.sampleFrequencies= np.char.add(self.sampleFrequencies, suffix)
 	
@@ -87,7 +86,7 @@ class synthesiser(object):
 		#===============================================================
 		# Create an array of sound objects for all notes to be played
 		
-		self.sampleArray= [self.sampleFrequencies for i in self.keysPressed]
+		self.sampleArray= [self.sampleFrequencies[self.octaves[self.octaveIndex]-1][i] for i in self.keysPressed]
 		self.convertBufferToSoundSample()
 	
 	def playSoundArray(self):
@@ -181,18 +180,19 @@ class synthesiser(object):
 			sleep(self.length)
 			
 	def runPianoSample(self):
-	#===============================================================
-	# Main loop that will run the synthesiser in piano mode
-		self.octaves= (1,2,3,4,5,6,7)
-		running=True
-		while running:
-			self.keysPressed= self.mcp.buttonsPressedPoly()
-			self.createSoundArraySample()
-			self.playSoundArray()
-			self.waveformIndex= self.pcf.waveformButtonState()
-			self.octaveIndex= self.pcf.octaveButtonState(self.octaves)
-			self.lcdPrintPiano()
-			sleep(self.length)
+		#===============================================================
+		# Main loop that will run the synthesiser in piano mode
+			self.octaves= (1,2,3,4,5,6,7)
+			self.convertSampleStringToDir()
+			running=True
+			while running:
+				self.keysPressed= self.mcp.buttonsPressedPoly()
+				self.createSoundArraySample()
+				self.playSoundArray()
+				self.waveformIndex= self.pcf.waveformButtonState()
+				self.octaveIndex= self.pcf.octaveButtonState(self.octaves)
+				self.lcdPrintPiano()
+				sleep(0.5)
 	
 	def runCustom(self):
 		#===============================================================
