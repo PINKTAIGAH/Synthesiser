@@ -103,7 +103,22 @@ class synthesiser(object):
 		
 		self.line1= f'{self.adcParameters[0]} Hz, {self.adcParameters[2]} s      '
 		self.line2= f'{self.adcParameters[1]}, {self.waveforms[self.waveformIndex]}    '
+
+	def writeMainMessage(self):
+		#===============================================================
+		# Write message to lcd duuring main loop of Custom mode
+		line1= f'Play a tune!'
+		line2= f'Assign w/ red'
+		self.lcd.write(line1, line2)
 		
+	def lcdPrintPianoSample(self):
+		#===============================================================
+		# Print current state of synthesiser to lcd screen for 'Sample mode'
+		
+		line1= f'Instrumet: Piano'
+		line2= f'\nOctave: {self.octaves[self.octaveIndex]}'
+		self.lcd.write(line1, line2)
+	
 	def lcdPrintPiano(self):
 		#===============================================================
 		# Print current state of synthesiser to lcd screen for 'Piano mode'
@@ -191,7 +206,7 @@ class synthesiser(object):
 				self.playSoundArray()
 				self.waveformIndex= self.pcf.waveformButtonState()
 				self.octaveIndex= self.pcf.octaveButtonState(self.octaves)
-				self.lcdPrintPiano()
+				self.lcdPrintPianoSample()
 				sleep(0.5)
 	
 	def runCustom(self):
@@ -206,7 +221,7 @@ class synthesiser(object):
 			click= self.pcf.modeChangeButtonState()
 			if click== True:
 				self.modeChangeLoop()				
-			
+			self.writeMainMessage()
 			self.keysPressed= self.mcp.buttonsPressedPoly()
 			self.createSoundArrayCustom()
 			self.playSoundArray()

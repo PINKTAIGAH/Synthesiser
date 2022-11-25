@@ -14,6 +14,7 @@ if __name__== '__main__':
     except KeyboardInterrupt:
         pass
     finally:
-	    #lcd.clear()
+
+
 	    print(f'Program Terminated')
 
