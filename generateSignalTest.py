@@ -17,9 +17,9 @@ def main():
 	print(t_f-t_i)
 	
 	# Generate a second buffer and plot both
-	triangle_buffer= generate.createBuffer(4, 0.25, 1, f'triangle')
+	sawtooth_buffer= generate.createBuffer(4, 0.25, 1, f'sawtooth')
 	plt.plot(sine_buffer.T[0][:], label= 'sine wave @ 50 Hz')
-	plt.plot(triangle_buffer.T[0][:], label= 'triangle wave @ 4 Hz')
+	plt.plot(sawtooth_buffer.T[0][:], label= 'sawtooth wave @ 4 Hz')
 	plt.xlabel('time, t (s)')
 	plt.ylabel('Frequency, f (Hz)')
 	plt.title('Generated waves with Hanning window applied')

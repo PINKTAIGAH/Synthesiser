@@ -18,7 +18,7 @@ class generateSignal(object):
 		self.channelSize= channelSize
 		self.outputRate= outputRate
 		self.maxAmplitude= np.iinfo(np.int16).max
-		self.attackDecayLengh= 10000
+		self.attackDecayLengh= 5000
 		
 	def defineSignalParam(self, pitch, volume, duration):
 		#===============================================================
