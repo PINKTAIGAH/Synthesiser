@@ -18,7 +18,7 @@ class generateSignal(object):
 		self.channelSize= channelSize
 		self.outputRate= outputRate
 		self.maxAmplitude= np.iinfo(np.int16).max
-		self.attackDecayLengh= 5000
+		self.taperCoeff= 0.3
 		
 	def defineSignalParam(self, pitch, volume, duration):
 		#===============================================================
@@ -37,29 +37,21 @@ class generateSignal(object):
 		self.emptyOutputBuffer= np.zeros((self.totalSamples, self.channelSize),\
 										dtype= np.int16)
 		
-	def createHannWindow(self):
+	def createTukeyWindow(self):
 		#===============================================================
-		# Funcion that will compute the left and right side of a hanning 
-		# window
+		# Funcion that will return a tukay window
 		
-		window= np.hanning(2*self.attackDecayLengh)
-		self.windowLeft= window[:self.attackDecayLengh-1]
-		self.windowRight= window[self.attackDecayLengh:]
+		self.window= signal.tukey(self.totalSamples, alpha= self.taperCoeff)
 		
-	def applyHannWindow(self, signalArray):
+	def applyTukeyWindow(self, signalArray):
 		#===============================================================
-		# Apply hann window to any given signal array
+		# Apply tukey window to any given signal array
 		
-		# Define index where the left and right window will be ap[plied
-		leftWindowEnd= self.attackDecayLengh-1
-		rightWindowStart= self.totalSamples-self.attackDecayLengh
+		self.createTukeyWindow()
 		
-		self.createHannWindow()
-		
-		# Apply hann window
-		signalArray[:leftWindowEnd]= signalArray[:leftWindowEnd]* self.windowLeft
-		signalArray[rightWindowStart:self.totalSamples]= signalArray[rightWindowStart:self.totalSamples]* self.windowRight
-		
+		# Apply tikay window
+		signalArray= self.window*signalArray
+
 		return signalArray
 		
 	def fillOutputBuffer(self, signalArray):
@@ -81,7 +73,7 @@ class generateSignal(object):
 		
 		signalArray= self.amplitude*signal.chirp(self.t, f0=self.pitch,\
 						t1= self.totalSamples, f1= 3*self.pitch)
-		signalArray= self.applyHannWindow(signalArray)
+		signalArray= self.applyTukeyWindow(signalArray)
 		outputBuffer= self.fillOutputBuffer(signalArray)
 			
 		return outputBuffer
@@ -91,7 +83,7 @@ class generateSignal(object):
 		# Return sound buffer with square wave
 		
 		signalArray= self.amplitude*signal.sawtooth(2*np.pi*self.pitch*self.t)
-		signalArray= self.applyHannWindow(signalArray)
+		signalArray= self.applyTukeyWindow(signalArray)
 		outputBuffer= self.fillOutputBuffer(signalArray)
 		
 		return outputBuffer
@@ -101,7 +93,7 @@ class generateSignal(object):
 		# Return sound buffer with triangle wave
 		
 		signalArray= self.amplitude*signal.sawtooth(2*np.pi*self.pitch*self.t, 0.5)
-		signalArray= self.applyHannWindow(signalArray)
+		signalArray= self.applyTukeyWindow(signalArray)
 		outputBuffer= self.fillOutputBuffer(signalArray)
 		
 		return outputBuffer
@@ -111,7 +103,7 @@ class generateSignal(object):
 		# Return sound buffer with sawtooth wave
 		
 		signalArray= self.amplitude*signal.sawtooth(2*np.pi*self.pitch*self.t)
-		signalArray= self.applyHannWindow(signalArray)
+		signalArray= self.applyTukeyWindow(signalArray)
 		outputBuffer= self.fillOutputBuffer(signalArray)
 		
 		return outputBuffer	
@@ -123,7 +115,7 @@ class generateSignal(object):
 		noiseMean= 0
 		noiseStdDev= 0.5
 		signalArray= self.amplitude*np.random.normal(noiseMean, noiseStdDev, self.totalSamples)
-		signalArray= self.applyHannWindow(signalArray)
+		signalArray= self.applyTukeyWindow(signalArray)
 		outputBuffer= self.fillOutputBuffer(signalArray)
 			
 		return outputBuffer		

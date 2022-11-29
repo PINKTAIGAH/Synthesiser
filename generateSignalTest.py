@@ -21,10 +21,12 @@ def main():
 	plt.plot(sine_buffer.T[0][:], label= 'sine wave @ 50 Hz')
 	plt.plot(sawtooth_buffer.T[0][:], label= 'sawtooth wave @ 4 Hz')
 	plt.xlabel('time, t (s)')
-	plt.ylabel('Frequency, f (Hz)')
-	plt.title('Generated waves with Hanning window applied')
+	plt.ylabel('Frequency, f (Hz)', x= 0.5)
+	plt.title('Generated waves with Tukay window applied')
 	plt.legend()
 	plt.show()
+	
+
 
 if __name__== '__main__':
 	main()
