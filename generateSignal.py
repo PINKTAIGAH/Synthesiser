@@ -82,7 +82,7 @@ class generateSignal(object):
 		#===============================================================
 		# Return sound buffer with square wave
 		
-		signalArray= self.amplitude*signal.sawtooth(2*np.pi*self.pitch*self.t)
+		signalArray= self.amplitude*signal.square(2*np.pi*self.pitch*self.t)
 		signalArray= self.applyTukeyWindow(signalArray)
 		outputBuffer= self.fillOutputBuffer(signalArray)
 		
