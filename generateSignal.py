@@ -50,7 +50,7 @@ class generateSignal(object):
 		self.createTukeyWindow()
 		
 		# Apply tikay window
-		signalArray= self.window*signalArray
+		signalArray= self.window*signalArray[:self.window.shape[0]]
 
 		return signalArray
 		
