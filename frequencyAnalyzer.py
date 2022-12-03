@@ -52,7 +52,7 @@ df_data= pd.DataFrame( np.array([columnVals, mean_std, sem_std,]).T, columns= ['
 res= linregress(columnVals, mean_std)
 residuals= np.subtract(np.array(mean_std), res.intercept+res.slope*np.array(columnVals))
 
-print(f'intercept= {res.intercept}, slope= {res.slope}')
+print(f'intercept= {res.intercept} +/- {res.intercept_stderr},\n slope= {res.slope} +/- {res.stderr}')
 
 plt.errorbar(columnVals, mean_std, yerr= sem_std, fmt= 'kx', ms= 7 , ecolor= 'k', label= 'measured')
 plt.plot(columnVals, res.intercept+ res.slope*np.array(columnVals), label= 'predicted')
