@@ -47,13 +47,12 @@ sem_std= [df_std.iloc[:, 0:4].sem(axis=1), df_std.iloc[:, 5:9].sem(axis=1),\
 sem_std= [x[0] for _, x in enumerate(sem_std)]
 
 df_data= pd.DataFrame( np.array([columnVals, mean_std, sem_std,]).T, columns= ['frequencies', 'mean of std', 'sem of std'], index= frequencies)
-df_data.to_csv('stdVariationData.txt')
+#df_data.to_csv('stdVariationData.txt')
 
 res= linregress(columnVals, mean_std)
 residuals= np.subtract(np.array(mean_std), res.intercept+res.slope*np.array(columnVals))
-print(np.array(mean_std))
-print(res.intercept+res.slope*np.array(columnVals))
-print(residuals)
+
+print(f'intercept= {res.intercept}, slope= {res.slope}')
 
 plt.errorbar(columnVals, mean_std, yerr= sem_std, fmt= 'kx', ms= 7 , ecolor= 'k', label= 'measured')
 plt.plot(columnVals, res.intercept+ res.slope*np.array(columnVals), label= 'predicted')
